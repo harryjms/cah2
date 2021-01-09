@@ -1,7 +1,6 @@
 import express from "express";
 import game from "./routes/game";
 import pack from "./routes/pack";
-import test from "./routes/test";
 import sequelize from "./sequelize";
 const app = express();
 
