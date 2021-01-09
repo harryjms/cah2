@@ -32,8 +32,15 @@ class Pack extends Model<Pack> {
   @Column({
     type: DataType.STRING(30),
     allowNull: false,
+    unique: true,
   })
   name!: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    allowNull: false,
+  })
+  description!: string;
 
   @Column({
     type: DataType.JSON,
