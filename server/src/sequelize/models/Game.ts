@@ -28,6 +28,12 @@ class Game extends Model<Game> {
   })
   name!: string;
 
+  @Column({
+    type: DataType.STRING(14),
+    allowNull: false,
+  })
+  shortId!: string;
+
   @BelongsToMany(() => Player, () => GamePlayer)
   players!: Player[];
 

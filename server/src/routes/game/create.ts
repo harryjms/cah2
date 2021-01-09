@@ -6,6 +6,7 @@ import GamePack from "../../sequelize/models/GamePack";
 import GamePlayer from "../../sequelize/models/GamePlayer";
 import Pack from "../../sequelize/models/Pack";
 import Player from "../../sequelize/models/Player";
+import shortId from "shortid";
 const router = express.Router();
 
 export default router.post("/create", async (req, res, next) => {
@@ -31,7 +32,7 @@ export default router.post("/create", async (req, res, next) => {
     // Create player
     const player = await Player.create({ name: playerName });
     // Create game
-    const game = await Game.create({ name: gameName });
+    const game = await Game.create({ name: gameName, shortId: shortId() });
 
     // Link game and pack
     await GamePack.create({ gameId: game.uuid, packId: pack.uuid });
@@ -46,7 +47,12 @@ export default router.post("/create", async (req, res, next) => {
     });
 
     // Send back the game, player and pack IDs
-    res.json({ gameId: game.uuid, playerId: player.uuid, packId: pack.uuid });
+    res.json({
+      gameId: game.uuid,
+      playerId: player.uuid,
+      packId: pack.uuid,
+      gameShortId: game.shortId,
+    });
   } catch (err) {
     next(err);
   }
