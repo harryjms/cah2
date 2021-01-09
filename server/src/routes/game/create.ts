@@ -6,7 +6,7 @@ import GamePack from "../../sequelize/models/GamePack";
 import GamePlayer from "../../sequelize/models/GamePlayer";
 import Pack from "../../sequelize/models/Pack";
 import Player from "../../sequelize/models/Player";
-import shortId from "shortid";
+import shortId from "../../helpers/ShortID";
 const router = express.Router();
 
 export default router.post("/create", async (req, res, next) => {
@@ -29,10 +29,27 @@ export default router.post("/create", async (req, res, next) => {
       throw error;
     }
 
+    let shortid = shortId();
+
+    // Check no active game with short id
+    const checkid = async (): Promise<typeof shortid> => {
+      const activeId = await Game.findOne({
+        where: { shortId: shortid, gameEnd: null },
+      });
+      if (activeId) {
+        shortid = shortId();
+        return checkid();
+      } else {
+        return Promise.resolve(shortid);
+      }
+    };
+
+    const shortID = await checkid();
+
     // Create player
     const player = await Player.create({ name: playerName });
     // Create game
-    const game = await Game.create({ name: gameName, shortId: shortId() });
+    const game = await Game.create({ name: gameName, shortId: shortID });
 
     // Link game and pack
     await GamePack.create({ gameId: game.uuid, packId: pack.uuid });

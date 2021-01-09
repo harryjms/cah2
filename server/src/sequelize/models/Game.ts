@@ -34,6 +34,13 @@ class Game extends Model<Game> {
   })
   shortId!: string;
 
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+    defaultValue: null,
+  })
+  gameEnd!: Date;
+
   @BelongsToMany(() => Player, () => GamePlayer)
   players!: Player[];
 
